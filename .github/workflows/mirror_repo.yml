@@ -4,6 +4,8 @@ concurrency:
   group: mirror_repo
 jobs:
   mirror_repo:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'ICF-Corp/HAPEM' }}
     steps:
@@ -11,8 +13,8 @@ jobs:
       - uses: webfactory/ssh-agent@v0.9.0
         with:
             ssh-private-key: |
-              ${{ secrets.EPA_MIRROR_SOURCE_KEY }}
-              ${{ secrets.EPA_MIRROR_TARGET_KEY }}\
+              ${{ secrets.SOURCE_SSH_PRIVATE_KEY }}
+              ${{ secrets.TARGET_SSH_PRIVATE_KEY }}\
       - name: Clone Source
         run: cd ~ && git clone --bare git@github.com:ICF-Corp/HAPEM.git
       - name: Push Mirror
