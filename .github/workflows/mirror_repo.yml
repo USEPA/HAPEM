@@ -1,0 +1,19 @@
+name: Sync Mirror
+on: push
+concurrency:
+  group: mirror_repo
+jobs:
+  mirror_repo:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'ICF-Corp/HAPEM' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+            ssh-private-key: |
+              ${{ secrets.EPA_MIRROR_SOURCE_KEY }}
+              ${{ secrets.EPA_MIRROR_TARGET_KEY }}\
+      - name: Clone Source
+        run: cd ~ && git clone --bare git@github.com:ICF-Corp/HAPEM.git
+      - name: Push Mirror
+        run: cd ~/HAPEM.git && git push --mirror git@github.com:USEPA/HAPEM.git
